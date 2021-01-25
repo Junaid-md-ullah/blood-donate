@@ -6,29 +6,25 @@ import { useForm } from "react-hook-form";
 const ModalDonateBlood = ({modal2, closeModal2, afterOpenModal}) => {
   const { register, handleSubmit, watch, errors } = useForm();
   const[donatedBefore, setDonatedBefore] = useState();
-  const [alreadyDonated, setAlreadyDonated] = useState("no")
+  const [alreadyDonated, setAlreadyDonated] = useState(false)
   const onSubmit = data =>{
     
   };
 
   function checkDonor(e){
-    donatedBefore.donatedBlood.map(item => {
-      console.log(item)
-      if(e.target.value === item){
-        setAlreadyDonated("yes");
-        console.log(alreadyDonated)
-      }
-      else{
-        setAlreadyDonated("no");
-      }
-    })
+    var matches = donatedBefore.includes(e.target.value);
+    if(matches){
+      setAlreadyDonated(true);
+    }else{
+      setAlreadyDonated(false)
+    }
   }
 
   useEffect(()=>{
     fetch("https://jsonkeeper.com/b/NKZY")
     .then(res=> res.json())
           .then(( data ) => {
-              setDonatedBefore(data);
+              setDonatedBefore(data.donatedBlood);
           });
   },[])
 
@@ -59,7 +55,7 @@ const ModalDonateBlood = ({modal2, closeModal2, afterOpenModal}) => {
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column justify-content-center align-items-center">
             {
-                alreadyDonated === "no" ?   <span></span> : <h4 style={{color:'green'}}>Please Check your email</h4>
+                alreadyDonated ?   <h4 style={{color:'green'}}>Please Check your email</h4> : <span></span> 
               }
               <input name="patientName" className="mb-3" defaultValue="" placeholder="Patient Name" ref={register({ required: true })} />
               {errors.patientName && <span>This field is required</span>}

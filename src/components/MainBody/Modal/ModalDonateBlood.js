@@ -12,22 +12,20 @@ const ModalDonateBlood = ({modalIsOpen, closeModal, afterOpenModal}) => {
   };
 
   function checkOldDonor(e){
-    oldDonors.alreadyDonated.map(item => {
-      if(e.target.value === item){
-        setAlreadyExist(true);
-      }
-      else{
-        setAlreadyExist(false);
-      }
-    })
+    var matches = oldDonors.includes(e.target.value);
+    if(matches){
+      setAlreadyExist(true);
+    }else{
+      setAlreadyExist(false)
+    }
   }
 
   useEffect(()=>{
     fetch("https://jsonkeeper.com/b/MAHA")
     .then(res=> res.json())
           .then(( data ) => {
-              setOldDonors(data);
-              console.log(data)
+              setOldDonors(data.alreadyDonated);
+              
           });
   },[])
 
